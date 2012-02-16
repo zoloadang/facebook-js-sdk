@@ -23,6 +23,7 @@
 
 /**
  * The cross domain communication layer.
+ * 跨域通信层
  *
  * @class FB.XD
  * @static
@@ -36,12 +37,13 @@ FB.provide('XD', {
 
   /**
    * Initialize the XD layer. Native postMessage or Flash is required.
+   * 初始化。需要本地通讯机制或flash。
    *
-   * @param channelUrl {String} optional channel URL
+   * @param channelUrl {String} 可选
    * @access private
    */
   init: function(channelUrl) {
-    // only do init once, if this is set, we're already done
+    // 只需调用一次，之后初始化完成。
     if (FB.XD._origin) {
       return;
     }
@@ -74,9 +76,11 @@ FB.provide('XD', {
   /**
    * Resolve a id back to a node. An id is a string like:
    *   top.frames[5].frames['crazy'].parent.frames["two"].opener
+   * 解析传入的id字段得到一个节点。这个字段形如：
+   *   top.frames[5].frames['crazy'].parent.frames["two"].opener
    *
-   * @param   id {String}   the string to resolve
-   * @returns    {Node}     the resolved window object
+   * @param   id {String}   要解析的的字段
+   * @returns    {Node}     解析得到的节点
    * @throws  SyntaxError   if the id is malformed
    */
   resolveRelation: function(id) {
@@ -104,16 +108,19 @@ FB.provide('XD', {
 
   /**
    * Builds a url attached to a callback for xd messages.
+   * 创建一个绑定跨域信息的回调的url
    *
    * This is one half of the XD layer. Given a callback function, we generate
    * a xd URL which will invoke the function. This allows us to generate
    * redirect urls (used for next/cancel and so on) which will invoke our
    * callback functions.
+   * 这事一个半跨域层。给定一个回调函数，我们创建
+   * 一个会调用该函数的跨域url。这运行我们创建会调用回调函数的重定向url。
    *
    * @access private
-   * @param cb       {Function} the callback function
-   * @param relation {String}   parent or opener to indicate window relation
-   * @param forever  {Boolean}  indicate this handler needs to live forever
+   * @param cb       {Function} 回调函数
+   * @param relation {String}   关联的父窗口或者打开窗口
+   * @param forever  {Boolean}  该handler是否一直存在
    * @return        {String}   the xd url bound to the callback
    */
   handler: function(cb, relation, forever) {
@@ -164,9 +171,11 @@ FB.provide('XD', {
   /**
    * Handles the raw or parsed message and invokes the bound callback with
    * the data and removes the related window/frame.
+   * 处理原始的或者解析过的信息，并且触发绑定的以该信息为参数的回调函数
+   * 同时移除关联的窗口或者iframe
    *
    * @access private
-   * @param data {String|Object} the message fragment string or parameters
+   * @param data {String|Object} 信息片段字符串或参数集
    */
   recv: function(data) {
     if (typeof data == 'string') {
@@ -182,6 +191,7 @@ FB.provide('XD', {
 
   /**
    * Provides Native ``window.postMessage`` based XD support.
+   * 提供基于本地 ``window.postMessage`` 的DX支持
    *
    * @class FB.XD.PostMessage
    * @static
@@ -214,6 +224,7 @@ FB.provide('XD', {
 
   /**
    * Provides Flash Local Connection based XD support.
+   * 提供Flash本地关联的 XD 支持.
    *
    * @class FB.XD.Flash
    * @static
@@ -246,6 +257,7 @@ FB.provide('XD', {
 
   /**
    * Provides XD support via a fragment by reusing the current page.
+   * 提供基于使用当前页面的页面标识符的 XD 支持
    *
    * @class FB.XD.Fragment
    * @static
