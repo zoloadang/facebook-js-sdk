@@ -25,6 +25,7 @@
 
 /**
  * Authentication, Authorization & Sessions.
+ * 会话认证
  *
  * @class FB
  * @static
@@ -34,16 +35,23 @@ FB.provide('', {
   /**
    * Find out the current status from the server, and get a session if the user
    * is connected.
+   * 从服务器上找到当前用户状态，如果用户已经连接上，则给予一个session
    *
    * The user's status or the question of *who is the current user* is
    * the first thing you will typically start with. For the answer, we
    * ask facebook.com. Facebook will answer this question in one of
    * two ways:
+   * 用户状态，即“当前用户是谁”的问题，是打开页面后首要解决的问题。
+   * 为了获得这个信息，我们向facebook.com发请求，facebook将以以下两种信息回答这个问题：
    *
    * 1. Someone you don't know.
    * 2. Someone you know and have interacted with. Here's a session for them.
+   * 
+   * 1. 你不认识的人
+   * 2. 你认识并且与之交互的人。这样的人拥有一个fb派发的session。
    *
    * Here's how you find out:
+   * 以下演示你如何找出这个答案：
    *
    *     FB.getLoginStatus(function(response) {
    *       if (response.session) {
@@ -53,6 +61,7 @@ FB.provide('', {
    *       }
    *     });
    *
+   * 
    * The example above will result in the callback being invoked **once**
    * on load based on the session from www.facebook.com. JavaScript applications
    * are typically written with heavy use of events, and the SDK **encourages**
@@ -60,27 +69,43 @@ FB.provide('', {
    * interactions with authentication flows, such as [FB.login()][login] or
    * [[wiki:fb:login-button]]. Widgets such as [[wiki:fb:comments (XFBML)]]
    * may also trigger authentication.
+   * 上面的例子将导致从facebook获得session的页面在加载完毕的时候触发一次回调。
+   * js应用常常具备大量事件，而本sdk也暴露了各种事件。
+   * 他们被多种需要授权的交互流程触发，比如登录、评论。
    *
    * **Events**
    *
    * #### auth.login
    * This event is fired when your application first notices the user (in other
    * words, gets a session when it didn't already have a valid one).
+   * 当你的应用第一次识别出用户的时候触发
+   * 
    * #### auth.logout
    * This event is fired when your application notices that there is no longer
    * a valid user (in other words, it had a session but can no longer validate
    * the current user).
+   * 当你的应用发现用户未严重的时候触发
+   * 
    * #### auth.sessionChange
    * This event is fired for **any** auth related change as they all affect the
    * session: login, logout, session refresh. Sessions are refreshed over time
    * as long as the user is active with your application.
+   * 这个事件由任何影响sessiong的认证相关的改变触发：登录，等处，session刷新。
+   * 在用户登录你的应用的时间内，session可以被刷新多次。
+   * 
    * #### auth.statusChange
    * Typically you will want to use the auth.sessionChange event. But in rare
    * cases, you want to distinguish between these three states:
+   * 通常你会希望使用auth.sessionChange事件。
+   * 但少数情况下，你会希望区分出一下3种状态：
    *
    * - Connected
    * - Logged into Facebook but not connected with your application
    * - Not logged into Facebook at all.
+   * 
+   * - 已连接
+   * - 登录到fb但未连接你的应用
+   * - 完全没有登录facebook
    *
    * The [FB.Event.subscribe][subscribe] and
    * [FB.Event.unsubscribe][unsubscribe] functions are used to subscribe to
@@ -93,16 +118,19 @@ FB.provide('', {
    * The response object returned to all these events is the same as the
    * response from [FB.getLoginStatus][getLoginStatus], [FB.login][login] or
    * [FB.logout][logout]. This response object contains:
+   * 这些事件的返回对象都一样，该对象包含：
    *
    * status
    * : The status of the User. One of `connected`, `notConnected` or `unknown`.
-   *
+   * : 用户的状态。可选值：已连接/未链接/不知道。
    * session
    * : The session object.
+   * ： session对象
    *
    * perms
    * : The comma separated permissions string. This is specific to a
    *   permissions call. It is not persistent.
+   * ： 逗号分隔的许可字符串。它特定于一次许可调用，是非持久的。
    *
    * [subscribe]: /docs/reference/javascript/FB.Event.subscribe
    * [unsubscribe]: /docs/reference/javascript/FB.Event.unsubscribe
@@ -159,10 +187,17 @@ FB.provide('', {
    * it just **returns** the session. Many parts of your application already
    * *assume* the user is connected with your application. In such cases, you
    * may want to avoid the overhead of making asynchronous calls.
+   * 同步获取当前session。
+   * 这个方法的同步是指其独立于其他登录方法。
+   * 性质上和FB.getLoginStatus相近，但它仅仅返回session。
+   * 你的应用通常都假定用户已连接上。
+   * 在这种情况下，你可能希望避免使用同步调用。
    *
    * NOTE: You should never use this method at *page load* time. Generally, it
    * is safer to use [FB.getLoginStatus()][FB.getLoginStatus] if you are
    * unsure.
+   * 注意：不要在页面加载的时候使用这个方法。
+   * 通常，当你不确认的时候，使用FB.getLoginStatus方法会安全的多。
    *
    * [FB.getLoginStatus]: /docs/reference/javascript/FB.getLoginStatus
    *
@@ -181,6 +216,10 @@ FB.provide('', {
    * reduce user friction when they first arrive at your site. You can
    * then prompt and show them the "Connect with Facebook" button
    * bound to an event handler which does the following:
+   * 一旦你确定了用户的状态，你可能需要提示用户登录。
+   * 当他们第一次访问你的页面时，你最好延迟这个行为以减少用户冲突。
+   * 你可以稍后提示用户，并显示绑定了以下事件处理器的“链接facebook‘按钮。
+   * 
    *
    *     FB.login(function(response) {
    *       if (response.session) {
@@ -193,6 +232,8 @@ FB.provide('', {
    * You should **only** call this on a user event as it opens a
    * popup. Most browsers block popups, _unless_ they were initiated
    * from a user event, such as a click on a button or a link.
+   * 你应当仅在用户打开了一个弹出层时调用这个方法。
+   * 很多浏览器阻止了弹出层，除非这个行为由用户触发，比如点击了一个按钮或者链接。
    *
    *
    * Depending on your application's needs, you may need additional
@@ -203,6 +244,11 @@ FB.provide('', {
    * remember is that this call can be made even _after_ the user has
    * first connected. So you may want to delay asking for permissions
    * until as late as possible:
+   * 根据你的应用的需要，你可能需要用户给你额外的许可。
+   * 大多数的调用并不需要额外的许可，所以你首先需要确认你需要额外的许可。
+   * 这是一个好注意，应为这个步骤增加了用户进程的潜在冲突。
+   * 另外一点需要注意的是当用户第一次连接上之后，这个方法仍然可以调用。
+   * 所以你可能希望仅可能晚的向用户申请额外的许可。
    *
    *     FB.login(function(response) {
    *       if (response.session) {
@@ -234,16 +280,20 @@ FB.provide('', {
 
   /**
    * Logout the user in the background.
+   * 后台登出
    *
    * Just like logging in is tied to facebook.com, so is logging out -- and
    * this call logs the user out of both Facebook and your site. This is a
    * simple call:
+   * 就像绑定到facebook的登陆一样，登出也如此。并且调用日志记录用户登出了facebook和你的网站。
+   * 下面是一个简单的调用：
    *
    *     FB.logout(function(response) {
    *       // user is now logged out
    *     });
    *
    * NOTE: You can only log out a user that is connected to your site.
+   * 注意：你只能记录一个连接了你网站的用户登出。
    *
    * @access public
    * @param cb {Function} The callback function.
@@ -255,6 +305,7 @@ FB.provide('', {
 
 /**
  * Internal Authentication implementation.
+ * 内部认证实现
  *
  * @class FB.Auth
  * @static
@@ -267,6 +318,8 @@ FB.provide('Auth', {
   /**
    * Set a new session value. Invokes all the registered subscribers
    * if needed.
+   * 设置一个新的session值。
+   * 如果需要的话，可以触发所有的订阅。
    *
    * @access private
    * @param session {Object}  the new Session
@@ -354,14 +407,17 @@ FB.provide('Auth', {
 
   /**
    * This handles receiving a session from:
+   * 这个处理器从以下3处接收session：
    *  - login_status.php
    *  - login.php
-   *  - tos.php
+   *  - tos.php  
    *
    * It also (optionally) handles the ``xxRESULTTOKENxx`` response from:
+   * 它可以处理来自以下页面的``xxRESULTTOKENxx``返回
    *  - prompt_permissions.php
    *
-   * And calls the given callback with::
+   * And calls the given callback with:
+   * 并且以下面的对象为参数调用回调函数：
    *
    *   {
    *     session: session or null,

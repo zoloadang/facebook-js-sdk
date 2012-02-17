@@ -33,6 +33,8 @@ FB.provide('', {
   /**
    * Method for triggering UI interaction with Facebook as iframe dialogs or
    * popups, like publishing to the stream, sharing links.
+   * 触发iframe或对话框与Facebook的UI交互
+   * 例如发布和分享
    *
    * Example **stream.publish**:
    *
@@ -78,13 +80,19 @@ FB.provide('', {
    * being used, but specifying the method itself is mandatory. If *display* is
    * not specified, then iframe dialogs will be used when possible, and popups
    * otherwise.
+   * 
+   * 需要的参数基于要调用的方法。
+   * “method”参数比选。
+   * 如果“display”没有指定，则调用iframe对话框，否则调用弹出框。
    *
    * Property | Type    | Description                        | Argument
    * -------- | ------- | ---------------------------------- | ------------
    * method   | String  | The UI dialog to invoke.           | **Required**
    * display  | String  | Specify `"popup"` to force popups. | **Optional**
+   * 
    * @param cb {Function} Optional callback function to handle the result. Not
    * all methods may have a response.
+   * 可选处理返回结果的回调函数。不是所有的方法都具有返回值。
    */
   ui: function(params, cb) {
     if (!params.method) {
@@ -115,6 +123,7 @@ FB.provide('', {
 
 /**
  * Internal UI functions.
+ * 内部UI函数
  *
  * @class FB.UIServer
  * @static
@@ -123,6 +132,7 @@ FB.provide('', {
 FB.provide('UIServer', {
   /**
    * UI Methods will be defined in this namespace.
+   * 所有的UI方法将定义在该命名空间下。
    */
   Methods: {},
 
@@ -133,11 +143,17 @@ FB.provide('UIServer', {
   /**
    * Serves as a generic transform for UI Server dialogs. Once all dialogs are
    * built on UI Server, this will just become the default behavior.
+   * 提供UI服务对话框的一般转换。
+   * 一旦所有对话框基于UI服务创建，这个将成为默认的行为。
    *
    * Current transforms:
    * 1) display=dialog -> display=iframe. Most of the old Connect stuff uses
    *    dialog, but UI Server uses iframe.
    * 2) Renaming of channel_url parameter to channel.
+   * 
+   * 目前转换：
+   * 1) display=dialog -> display=iframe. 很多旧的内容使用了对话框，但是UI服务使用iframe。
+   * 2) 将channel_url参数重命名为channel.
    */
   genericTransform: function(call) {
     if (call.params.display == 'dialog') {
@@ -152,11 +168,12 @@ FB.provide('UIServer', {
 
   /**
    * Prepares a generic UI call.
+   * 准备一个常规UI调用
    *
    * @access private
-   * @param params {Object} the user supplied parameters
-   * @param cb {Function} the response callback
-   * @returns {Object} the call data
+   * @param params {Object} 用户提供的参数
+   * @param cb {Function} 返回后的回调
+   * @returns {Object} 调用的数据
    */
   prepareCall: function(params, cb) {
     var
@@ -237,9 +254,10 @@ FB.provide('UIServer', {
   /**
    * Open a popup window with the given url and dimensions and place it at the
    * center of the current window.
+   * 在当前窗口中央打开一个指定url和尺寸的弹出窗口
    *
    * @access private
-   * @param call {Object} the call data
+   * @param call {Object} 要调用的数据
    */
   popup: function(call) {
     // we try to place it at the center of the current window
@@ -295,6 +313,7 @@ FB.provide('UIServer', {
 
   /**
    * Builds and inserts a hidden iframe based on the given call data.
+   * 基于给定的调用数据，创建并插入一个隐藏的iframe
    *
    * @access private
    * @param call {Object} the call data
@@ -307,6 +326,7 @@ FB.provide('UIServer', {
 
   /**
    * Builds and inserts a iframe dialog based on the given call data.
+   * 基于给定的调用数据创建并插入一个firame对话框
    *
    * @access private
    * @param call {Object} the call data
@@ -326,6 +346,7 @@ FB.provide('UIServer', {
 
   /**
    * Inserts an iframe based on the given call data.
+   * 基于给定的调用数据插入一个iframe
    *
    * @access private
    * @param call {Object} the call data
@@ -364,6 +385,7 @@ FB.provide('UIServer', {
 
   /**
    * Trigger the default action for the given call id.
+   * 触发给定调用id的默认行为
    *
    * @param id {String} the call id
    */
@@ -378,6 +400,8 @@ FB.provide('UIServer', {
    * Start and manage the window monitor interval. This allows us to invoke
    * the default callback for a window when the user closes the window
    * directly.
+   * 管理窗口
+   * 这允许用户在直接关闭窗口的时候调用默认的回调函数。
    *
    * @access private
    */
@@ -429,6 +453,8 @@ FB.provide('UIServer', {
   /**
    * Handles channel messages. These should be general, like a resize message.
    * Custom logic should be handled as part of the "next" handler.
+   * 处理通道信息。这些信息必须是一般的，比如重设尺寸。
+   * 自定义逻辑应该当成“next”处理器的一部分来处理
    *
    * @access private
    * @param frame {String} the frame id
@@ -456,6 +482,8 @@ FB.provide('UIServer', {
   /**
    * A "next handler" is a specialized XD handler that will also close the
    * frame. This can be a hidden iframe, iframe dialog or a popup window.
+   * “下一步处理器”是一个订制的跨域处理器，它会关闭当前帧。
+   * 这个帧可以事一个隐藏iframe，iframe对话框或一个弹出窗口。
    *
    * @access private
    * @param cb        {Function} the callback function
@@ -478,7 +506,8 @@ FB.provide('UIServer', {
    * Handles the parsed message, invokes the bound callback with the data and
    * removes the related window/frame. This is the asynchronous entry point for
    * when a message arrives.
-   *
+   * 处理分析过的信息，触发以data为参数的绑定的回调，并且移除关联的window或iframe。
+   * 当信息到达时，这是一个异步入口。
    * @access private
    * @param data {Object} the message parameters
    * @param cb {Function} the callback function
@@ -522,6 +551,8 @@ FB.provide('UIServer', {
    * Some Facebook redirect URLs use a special ``xxRESULTTOKENxx`` to return
    * custom values. This is a convenience function to wrap a callback that
    * expects this value back.
+   * Facebook的某些重定向url使用了一个指定的 ``xxRESULTTOKENxx`` 来返回自定义值。
+   * 这是一个便利的方式来封装一个希望返回这个值的回调。
    *
    * @access private
    * @param cb        {Function} the callback function

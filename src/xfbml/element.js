@@ -25,6 +25,14 @@
  * @access private
  * @class FB.XFBML.Element
  */
+
+
+/**
+ * XFBML elements基类
+ *
+ * 如果要创建自己的XFBML elements,必须继承这个类，然后调用 FB.XFBML.registerTag方法
+ */
+
 FB.Class('XFBML.Element',
   /**
    * Create a new Element.
@@ -33,6 +41,13 @@ FB.Class('XFBML.Element',
    * @constructor
    * @param dom {DOMElement} the DOMElement for the tag
    */
+
+    /**
+     * 创建一个新的元素
+     *
+     * 私有构造函数
+     * @param dom
+     */
   function(dom) {
     this.dom = dom;
   },
@@ -50,6 +65,14 @@ FB.Class('XFBML.Element',
    * @param transform {Function} Optional function to transform found value.
    * @return {Object} final value
    */
+
+
+      /**
+       * 获取标签里的属性值
+       * @param name 属性名
+       * @param defaultValue 默认值
+       * @param transform （可选） 可以设置一个转换获取到的值的函数
+       */
   getAttribute: function(name, defaultValue, transform) {
     var value = (
       this.dom.getAttribute(name) ||
@@ -66,6 +89,13 @@ FB.Class('XFBML.Element',
    * @param name {String} Name of the attribute.
    * @param defaultValue {Object} Default value if attribute isn't set.
    */
+
+      /**
+       * 处理bool类型的辅助函数
+       *    为了处理获取到的字符串能表示正确的类型
+       * @param name
+       * @param defaultValue
+       */
   _getBoolAttribute: function(name, defaultValue) {
     return this.getAttribute(name, defaultValue, function(s) {
       s = s.toLowerCase();
@@ -80,6 +110,13 @@ FB.Class('XFBML.Element',
    * @param name {String} Name of the attribute.
    * @param defaultValue {Object} Default value if attribute isn't set.
    */
+
+      /**
+       * 获取样式中尺寸的整数值
+       *    css中height,widht这些值取过来，包含px,auto等，不能直接当数字类型用
+       * @param name
+       * @param defaultValue
+       */
   _getPxAttribute: function(name, defaultValue) {
     return this.getAttribute(name, defaultValue, function(s) {
       var size = parseInt(s.replace('px', ''), 10);
@@ -101,6 +138,14 @@ FB.Class('XFBML.Element',
    * @param defaultValue {Object} Default value
    * @param allowed {Array} List of allowed values.
    */
+
+      /**
+       * 获取属性值，但是如果这个值不在指定的列表中（@param allowed），就返回默认值
+       * 此函数忽略大小写
+       * @param name
+       * @param defaultValue
+       * @param allowed
+       */
   _getAttributeFromList: function(name, defaultValue, allowed) {
     return this.getAttribute(name, defaultValue, function(s) {
       s = s.toLowerCase();
@@ -118,6 +163,10 @@ FB.Class('XFBML.Element',
    * @access private
    * @returns {Boolean} true if element is valid
    */
+
+      /**
+       * 检查当前节点是否仍然可用，并且依然在文档中
+       */
   isValid: function() {
     for (var dom = this.dom; dom; dom = dom.parentNode) {
       if (dom == document.body) {
@@ -131,6 +180,12 @@ FB.Class('XFBML.Element',
    *
    * @access private
    */
+
+      /**
+       * 清除此当前元素，并且移除所有包含的节点
+       *    这注释与功能不符，this.dom.innerHTML = '';不能清除本身，不解
+       *
+       */
   clear: function() {
     this.dom.innerHTML = '';
   }

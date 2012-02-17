@@ -1,98 +1,35 @@
 /**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *
- *
- * @provides fb.canvas
- * @requires fb.prelude
- *           fb.array
- *           fb.content
- *           fb.qs
- */
-
-/**
- * Things used by Canvas apps.
- *
- * ---------------------------------------------------------------------
- * IMPORTANT NOTE: IF YOU ARE USING THESE FUNCTIONS, MAKE SURE YOU GO TO
- *
- * http://www.facebook.com/developers
- *
- * CLICK YOUR APP, CLICK EDIT SETTINGS, CLICK MIGRATIONS AND ENABLE
- *
- * New SDKs
- * ---------------------------------------------------------------------
- *
- * @class FB.Canvas
- * @static
- * @access private
+ * FB Canvas
+ * 为FB创建新的命名空间Canvas
+ * @by 兰七
  */
 FB.provide('Canvas', {
   /**
-   * The timer. We keep it around so we can shut if off
+   * 计时器，以便关闭
+   * @by 兰七
    */
   _timer: null,
 
   /**
-   * Tells Facebook to resize your iframe.
-   *
-   * ## Migration Requirement
-   *
-   * To use this function, you MUST have enabled the *New SDKs*
-   * [migration](http://developers.facebook.com/blog/post/363).
-   *
-   * ## Examples
-   *
-   * Call this whenever you need a resize. This usually means, once after
-   * pageload, and whenever your content size changes.
-   *
-   *     window.fbAsyncInit = function() {
-   *       FB.Canvas.setSize();
-   *     }
-   *
-   *     // Do things that will sometimes call sizeChangeCallback()
-   *
-   *     function sizeChangeCallback() {
-   *       FB.Canvas.setSize();
-   *     }
-   *
-   * It will default to the current size of the frame, but if you have a need
-   * to pick your own size, you can use the params array.
-   *
-   *     FB.Canvas.setSize({ width: 640, height: 480 }); // Live in the past
-   *
-   * The max width is whatever you picked in your app settings, and there is no
-   * max height.
-   *
+   * 重定义iframe的尺寸.
+   * 最大宽度来自你的app设置，没有最大高度
    * @param {Object} params
    *
    * Property | Type    | Description                      | Argument   | Default
    * -------- | ------- | -------------------------------- | ---------- | -------
-   * width    | Integer | Desired width. Max is app width. | *Optional* | frame width
-   * height   | Integer | Desired height.                  | *Optional* | frame height
+   * width    | Integer | 期望宽度，最大是 app宽度. 			   | *Optional* | frame width
+   * height   | Integer | 期望高度                  					   | *Optional* | frame height
    *
-   * @author ptarjan
+   * @by 兰七
    */
   setSize: function(params) {
-    // setInterval calls its function with an integer
+    // 循环调用
     if (typeof params != "object") {
       params = {};
     }
     params = FB.copy(params || {}, FB.Canvas._computeContentSize());
 
-    // Deep compare
+    // 深度比较
     if (FB.Canvas._lastSize &&
         FB.Canvas._lastSize.width == params.width &&
         FB.Canvas._lastSize.height == params.height) {
@@ -108,47 +45,16 @@ FB.provide('Canvas', {
   },
 
   /**
-   * Starts or stops a timer which resizes your iframe every few milliseconds.
-   *
-   * Used to be known as:
-   * [startTimerToSizeToContent](http://wiki.developers.facebook.com/index.php/Resizable_IFrame)
-   *
-   * ## Migration Requirement
-   *
-   * To use this function, you MUST have enabled the *New SDKs*
-   * [migration](http://developers.facebook.com/blog/post/363).
-   *
-   * ## Examples
-   *
-   * This function is useful if you know your content will change size, but you
-   * don't know when. There will be a slight delay, so if you know when your
-   * content changes size, you should call [setSize](FB.Canvas.setSize)
-   * yourself (and save your user's CPU cycles).
-   *
-   *     window.fbAsyncInit = function() {
-   *       FB.Canvas.setAutoResize();
-   *     }
-   *
-   * If you ever need to stop the timer, just pass false.
-   *
-   *     FB.Canvas.setAutoResize(false);
-   *
-   * If you want the timer to run at a different interval, you can do that too.
-   *
-   *     FB.Canvas.setAutoResize(91); // Paul's favourite number
-   *
-   * Note: If there is only 1 parameter and it is a number, it is assumed to be
-   * the interval.
-   *
-   * @param {Boolean} onOrOff Whether to turn the timer on or off. truthy ==
+   * 启动或停止计时器，每隔几毫秒重置iframe
+   * 注意： 如果只有一个参数，是一个数字的话，表明要循环调用
+   * @param {Boolean} onOrOff 计时器是否开关. truthy ==
    * on, falsy == off. **default** is true
-   * @param {Integer} interval How often to resize (in ms). **default** is
+   * @param {Integer} 循环多久执行 (in ms). **default** is
    * 100ms
    *
-   * @author ptarjan
+   * @by 兰七
    */
   setAutoResize: function(onOrOff, interval) {
-    // I did this a few times, so I expect many users will too
     if (interval === undefined && typeof onOrOff == "number") {
       interval = onOrOff;
       onOrOff = true;
@@ -158,7 +64,7 @@ FB.provide('Canvas', {
       if (FB.Canvas._timer === null) {
         FB.Canvas._timer =
           window.setInterval(FB.Canvas.setSize,
-                             interval || 100); // 100 ms is the default
+                             interval || 100); // 默认100 ms 
       }
       FB.Canvas.setSize();
     } else {
@@ -170,12 +76,9 @@ FB.provide('Canvas', {
   },
 
   /**
-   * Determine the size of the actual contents of the iframe.
-   *
-   * This is the same number jQuery seems to give for
-   * $(document).height() but still causes a scrollbar in some browsers
-   * on some sites.
-   * Patches and test cases are welcome.
+   * 获取iframe实际内容的尺寸
+   * 使用jquery 的$(document).height() 也能获取相同的数据，但在一些浏览器会产生一个滚动条，欢迎测试
+   * @by 兰七
    */
   _computeContentSize: function() {
     var body = document.body,
@@ -208,9 +111,8 @@ FB.provide('Canvas', {
   },
 
   /**
-   * Sends a request back to facebook.
-   *
-   * @author ptarjan
+   * 发送请求到facebook.
+   * @by 兰七
    */
   _sendMessageToFacebook: function(message) {
     var url = FB._domain.staticfb + 'connect/canvas_proxy.php#' +

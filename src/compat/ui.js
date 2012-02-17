@@ -1,170 +1,94 @@
-/**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *
- *
- * @provides fb.compat.ui
- * @requires fb.prelude
- *           fb.qs
- *           fb.ui
- *           fb.json
- */
+﻿/**
+*
+* @provides fb.compat.ui
+* @requires fb.prelude	fb.qs	fb.ui	fb.json
+* @by 陈静
+*/
 
 /**
- * NOTE: You should use FB.ui() instead.
- *
- * UI Calls.
- *
- * @class FB
- * @static
- * @access private
- */
+* NOTE：应该使用FB.ui()代替。
+*
+* UI 调用
+*
+* @class FB
+* @static
+* @access private
+*/
 FB.provide('', {
   /**
-   * NOTE: You should use FB.ui() instead.
-   *
-   * Sharing is the light weight way of distributing your content. As opposed
-   * to the structured data explicitly given in the [FB.publish][publish] call,
-   * with share you simply provide the URL.
-   *
-   *      FB.share('http://github.com/facebook/connect-js');
-   *
-   * Calling [FB.share][share] without any arguments will share the current
-   * page.
-   *
-   * This call can be used without requiring the user to sign in.
-   *
-   * [publish]: /docs/?u=facebook.jslib-alpha.FB.publish
-   * [share]: /docs/?u=facebook.jslib-alpha.FB.share
-   *
-   * @access private
-   * @param u {String} the url (defaults to current URL)
-   */
+* NOTE：应该使用FB.ui()代替。
+ *
+* 共享是发布内容的轻量级的方法。
+* 和[FB.publish][publish]调用中明确给出的结构化的数据相反，只需提供URL。
+*
+* FB.share('http://github.com/facebook/connect-js');
+*
+* 无参调用[FB.share][share]会共享当前页面
+*
+* 这个调用不需要用户登录
+*
+* [publish]: /docs/?u=facebook.jslib-alpha.FB.publish
+* [share]: /docs/?u=facebook.jslib-alpha.FB.share
+*
+* @access private
+* @param u {String} url(默认为当前URL)
+*/
   share: function(u) {
     FB.log('FB.share() has been deprecated. Please use FB.ui() instead.');
     FB.ui({
       display : 'popup',
-      method  : 'stream.share',
-      u       : u
+      method : 'stream.share',
+      u : u
     });
   },
 
   /**
-   * NOTE: You should use FB.ui() instead.
-   *
-   * Publish a post to the stream.
-   *
-   * This is the main, fully featured distribution mechanism for you
-   * to publish into the user's stream. It can be used, with or
-   * without an API key. With an API key you can control the
-   * Application Icon and get attribution. You must also do this if
-   * you wish to use the callback to get notified of the `post_id`
-   * and the `message` the user typed in the published post, or find
-   * out if the user did not publish (clicked on the skipped button).
-   *
-   * Publishing is a powerful feature that allows you to submit rich
-   * media and provide a integrated experience with control over your
-   * stream post. You can guide the user by choosing the prompt,
-   * and/or a default message which they may customize. In addition,
-   * you may provide image, video, audio or flash based attachments
-   * with along with their metadata. You also get the ability to
-   * provide action links which show next to the "Like" and "Comment"
-   * actions. All this together provides you full control over your
-   * stream post. In addition, if you may also specify a target for
-   * the story, such as another user or a page.
-   *
-   * A post may contain the following properties:
-   *
-   * Property            | Type   | Description
-   * ------------------- | ------ | --------------------------------------
-   * message             | String | This allows prepopulating the message.
-   * attachment          | Object | An [[wiki:Attachment (Streams)]] object.
-   * action_links        | Array  | An array of [[wiki:Action Links]].
-   * actor_id            | String | A actor profile/page id.
-   * target_id           | String | A target profile id.
-   * user_message_prompt | String | Custom prompt message.
-   *
-   * The post and all the parameters are optional, so use what is best
-   * for your specific case.
-   *
-   * Example:
-   *
-   *     var post = {
-   *       message: 'getting educated about Facebook Connect',
-   *       attachment: {
-   *         name: 'Facebook Connect JavaScript SDK',
-   *         description: (
-   *           'A JavaScript library that allows you to harness ' +
-   *           'the power of Facebook, bringing the user\'s identity, ' +
-   *           'social graph and distribution power to your site.'
-   *         ),
-   *         href: 'http://github.com/facebook/connect-js'
-   *       },
-   *       action_links: [
-   *         {
-   *           text: 'GitHub Repo',
-   *           href: 'http://github.com/facebook/connect-js'
-   *         }
-   *       ],
-   *       user_message_prompt: 'Share your thoughts about Facebook Connect'
-   *     };
-   *
-   *     FB.publish(
-   *       post,
-   *       function(published_post) {
-   *         if (published_post) {
-   *           alert(
-   *             'The post was successfully published. ' +
-   *             'Post ID: ' + published_post.post_id +
-   *             '. Message: ' + published_post.message
-   *           );
-   *         } else {
-   *           alert('The post was not published.');
-   *         }
-   *       }
-   *     );
-   *
-   * @access private
-   * @param post {Object} the post object
-   * @param cb {Function} called with the result of the action
-   */
+* NOTE：应该使用FB.ui()代替。
+*
+* 公开一个端口给stream。
+*
+* A post 可能包含以下属性:
+*
+* Property | Type | Description
+* ------------------- | ------ | --------------------------------------
+* message | String | This allows prepopulating the message.
+* attachment | Object | An [[wiki:Attachment (Streams)]] object.
+* action_links | Array | An array of [[wiki:Action Links]].
+* actor_id | String | A actor profile/page id.
+* target_id | String | A target profile id.
+* user_message_prompt | String | Custom prompt message.
+*
+* 所有的参数都是可选的，视情况使用。
+*
+* @access private
+* @param post {Object} post对象
+* @param cb {Function} 根据action的结果调用的方法
+*/
   publish: function(post, cb) {
     FB.log('FB.publish() has been deprecated. Please use FB.ui() instead.');
     post = post || {};
     FB.ui(FB.copy({
       display : 'popup',
-      method  : 'stream.publish',
+      method : 'stream.publish',
       preview : 1
     }, post || {}), cb);
   },
 
   /**
-   * NOTE: You should use FB.ui() instead.
-   *
-   * Prompt the user to add the given id as a friend.
-   *
-   * @access private
-   * @param id {String} the id of the target user
-   * @param cb {Function} called with the result of the action
-   */
+* NOTE：应该使用FB.ui()代替。
+*
+* 添加给定id为friend。
+*
+* @access private
+* @param id {String} 目标用户的id
+* @param cb {Function} 根据action的结果调用的方法
+*/
   addFriend: function(id, cb) {
     FB.log('FB.addFriend() has been deprecated. Please use FB.ui() instead.');
     FB.ui({
       display : 'popup',
-      id      : id,
-      method  : 'friend.add'
+      id : id,
+      method : 'friend.add'
     }, cb);
   }
 });

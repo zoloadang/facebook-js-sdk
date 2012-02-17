@@ -1,51 +1,33 @@
-/**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @provides fb.type
- * @layer basic
- * @requires fb.prelude
- */
+﻿/**
+*
+* @provides fb.type
+* @layer basic
+* @requires fb.prelude
+* @by 陈静
+*/
 
-// Provide Class/Type support.
-// TODO: As a temporary hack, this docblock is written as if it describes the
-// top level FB namespace. This is necessary because the current documentation
-// parser uses the description from this file for some reason.
+// 提供Class/Type 支持。
+
 /**
- * The top level namespace exposed by the SDK. Look at the [readme on
- * **GitHub**][readme] for more information.
- *
- * [readme]: http://github.com/facebook/connect-js
- *
- * @class FB
- * @static
- */
+*
+* @class FB
+* @static
+*/
 FB.provide('', {
   /**
-   * Bind a function to a given context and arguments.
-   *
-   * @static
-   * @access private
-   * @param fn {Function} the function to bind
-   * @param context {Object} object used as context for function execution
-   * @param {...} arguments additional arguments to be bound to the function
-   * @returns {Function} the bound function
-   */
+* 绑定一个函数到给定的上下文和参数。
+*
+* @static
+* @access private
+* @param fn {Function} 要绑定的函数
+* @param context {Object} 作为函数执行上下文的对象
+* @param {...} 其他要绑定到函数的参数
+* @returns {Function} 绑定后的函数
+*/
   bind: function() {
     var
-      args    = Array.prototype.slice.call(arguments),
-      fn      = args.shift(),
+      args = Array.prototype.slice.call(arguments),
+      fn = args.shift(),
       context = args.shift();
     return function() {
       return fn.apply(
@@ -56,22 +38,19 @@ FB.provide('', {
   },
 
   /**
-   * Create a new class.
-   *
-   * Note: I have to use 'Class' instead of 'class' because 'class' is
-   * a reserved (but unused) keyword.
-   *
-   * @access private
-   * @param name {string} class name
-   * @param constructor {function} class constructor
-   * @param proto {object} instance methods for class
-   */
+* 创建一个新类
+*
+* @access private
+* @param name {string} 类名
+* @param constructor {function} 构造器
+* @param proto {object} 类的实例方法
+*/
   Class: function(name, constructor, proto) {
     if (FB.CLASSES[name]) {
       return FB.CLASSES[name];
     }
 
-    var newClass = constructor ||  function() {};
+    var newClass = constructor || function() {};
 
     newClass.prototype = proto;
     newClass.prototype.bind = function(fn) {
@@ -85,18 +64,17 @@ FB.provide('', {
   },
 
   /**
-   * Create a subclass
-   *
-   * Note: To call base class constructor, use this._base(...).
-   * If you override a method 'foo' but still want to call
-   * the base class's method 'foo', use this._callBase('foo', ...)
-   *
-   * @access private
-   * @param {string} name class name
-   * @param {string} baseName,
-   * @param {function} constructor class constructor
-   * @param {object} proto instance methods for class
-   */
+* 创建一个子类
+* Note: 要调用基类的构造器，可以使用 this._base(...)
+*		如果已经覆盖了基类的一个方法（假设为'foo')，
+*		但仍想调用基类的该方法，则使用 this._callBase('foo', ...)
+*
+* @access private
+* @param {string} name 类名
+* @param {string} baseName 基类类名
+* @param {function} constructor 构造器
+* @param {object} proto 类的实例方法
+*/
   subclass: function(name, baseName, constructor, proto) {
     if (FB.CLASSES[name]) {
       return FB.CLASSES[name];
@@ -123,11 +101,14 @@ FB.provide('', {
   CLASSES: {}
 });
 
-/**
- * @class FB.Type
- * @static
- * @private
- */
+
+  /**
+* 判断给定对象是否是指定类型
+*
+* @class FB.Type
+* @static
+* @private
+*/
 FB.provide('Type', {
   isType: function(obj, type) {
     while (obj) {

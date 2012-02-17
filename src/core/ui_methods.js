@@ -20,9 +20,12 @@
 
 /**
  * Simple UI methods. Consider putting complex UI methods in their own modules.
+ * 简单的UI方法。建议将复杂的UI方法封装在自己的模块里。
  *
  * NOTE: Right now, Methods need to provide an initial size, as well as a URL.
  * In the UIServer enabled world, we should not need the URL.
+ * 注意：该版本中，UI方法需要提供一个初始化的尺寸和URL
+ * 在UIserver启用的场景下，我们不需要提同URL。
  */
 FB.provide('UIServer.Methods', {
   'friends.add': {

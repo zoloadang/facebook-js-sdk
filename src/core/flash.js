@@ -22,7 +22,7 @@
  */
 
 /**
- * Flash Support.
+ * Flash 支持
  *
  * @class FB.Flash
  * @static
@@ -30,7 +30,7 @@
  */
 FB.provide('Flash', {
   //
-  // DYNAMIC DATA
+  // 动态数据
   //
   _minVersions: [
     [9,  0, 159, 0 ],
@@ -39,7 +39,7 @@ FB.provide('Flash', {
   _swfPath: 'swf/XdComm.swf',
 
   /**
-   * The onReady callbacks.
+   * onReady回调
    *
    * @access private
    * @type Array
@@ -47,20 +47,20 @@ FB.provide('Flash', {
   _callbacks: [],
 
   /**
-   * Initialize the SWF.
+   * 初始化 SWF.
    *
    * @access private
    */
   init: function() {
-    // only initialize once
+    // 只初始化一次
     if (FB.Flash._init) {
       return;
     }
     FB.Flash._init = true;
 
-    // the SWF calls this global function to notify that its ready
-    // FIXME: should allow the SWF to take a flashvar that controls the name
-    // of this function. we should not have any globals other than FB.
+    // SWF访问全局函数通知自己已经ready了
+    // FIXME: 
+    //应该允许SWF用一个flashvar控制这个函数的名字。我们不应该有除了FB外的其他全局对象。
     window.FB_OnFlashXdCommReady = function() {
       FB.Flash._ready = true;
       for (var i=0, l=FB.Flash._callbacks.length; i<l; i++) {
@@ -69,7 +69,7 @@ FB.provide('Flash', {
       FB.Flash._callbacks = [];
     };
 
-    // create the swf
+    // 创建swf
     var
       IE   = !!document.attachEvent,
       swf  = FB._domain.cdn + FB.Flash._swfPath,
@@ -93,7 +93,7 @@ FB.provide('Flash', {
   },
 
   /**
-   * Check that the minimal version of Flash we need is available.
+   * 检查我们需要的最低的Flash版本
    *
    * @access private
    * @return {Boolean} true if the minimum version requirements are matched
@@ -170,7 +170,7 @@ FB.provide('Flash', {
   },
 
   /**
-   * Register a function that needs to ensure Flash is ready.
+   * 注册一个函数，需要确认Flash是ready状态的。
    *
    * @access private
    * @param cb {Function} the function

@@ -1,56 +1,29 @@
-/**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @provides fb.compat.xfbml
- * @requires fb.prelude
- *           fb.xfbml
- */
+﻿/**
+*
+* @provides fb.compat.xfbml
+* @requires fb.prelude fb.xfbml
+* @by 陈静
+*/
 
 /**
- * Methods for the rendering of [[wiki:XFBML]] tags.
- *
- * To render the tags, simply put the tags anywhere in your page, and then
- * call:
- *
- *      FB.XFBML.parse();
- *
- * @class FB.XFBML
- * @static
- */
+* 渲染标签[[wiki:XFBML]]的方法
+*
+* 要渲染标签，只需把标签放在页面的任一位置，然后调用: FB.XFBML.parse();
+*
+* @class FB.XFBML
+* @static
+*/
 FB.provide('XFBML', {
   /**
-   * NOTE: This method is deprecated. You should instead set the innerHTML
-   * yourself and call FB.XFBML.parse() on the DOMElement after.
-   *
-   * Dynamically set XFBML markup on a given DOM element. Use this
-   * method if you want to set XFBML after the page has already loaded
-   * (for example, in response to an Ajax request or API call).
-   *
-   * Example:
-   * --------
-   * Set the innerHTML of a dom element with id "container"
-   * to some markup (fb:name + regular HTML) and render it
-   *
-   *      FB.XFBML.set(FB.$('container'),
-   *          '<fb:name uid="4"></fb:name><div>Hello</div>');
-   *
-   * @access private
-   * @param {DOMElement} dom  DOM element
-   * @param {String} markup XFBML markup. It may contain reguarl
-   *         HTML markup as well.
-   */
+* NOTE: 这个方法已经废弃了。
+*		替代该方法的是：自己设置innerHTML，然后在该DOM元素上调用FB.XFBML.parse()。
+*
+* 给一个指定的DOM元素动态设置XFBML标记。如果你想在页面载入完成后设置XFBML，可以使用本方法。
+*
+* @access private
+* @param {DOMElement} dom DOM元素
+* @param {String} markup XFBML标记。也可以包含常规的HTML标记。
+*/
   set: function(dom, markup, cb) {
     FB.log('FB.XFBML.set() has been deprecated.');
     dom.innerHTML = markup;

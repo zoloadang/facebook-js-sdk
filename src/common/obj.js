@@ -1,42 +1,29 @@
-/**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @provides fb.obj
- * @requires fb.type
- *           fb.json
- *           fb.event
- */
+﻿/**
+*
+* @provides fb.obj
+* @requires fb.type
+* fb.json
+* fb.event
+* @by 陈静
+*/
 
 /**
- * Base object type that support events.
- *
- * @class FB.Obj
- * @private
- */
+* 支持事件的基本对象类型
+*
+* @class FB.Obj
+* @private
+*/
 FB.Class('Obj', null,
   FB.copy({
     /**
-     * Set property on an object and fire property changed event if changed.
-     *
-     * @param {String} Property name. A event with the same name
-     *                 will be fire when the property is changed.
-     * @param {Object} new value of the property
-     * @private
-     */
+* 设置object的属性，并且当属性改变时，触发事件的改变
+*
+* @param {String} 属性名称。属性改变时，一个具有相同名称的事件将会被触发。
+* @param {Object} 指定属性的新值
+* @private
+*/
      setProperty: function(name, value) {
-       // Check if property actually changed
+       // 检查属性是否改变
        if (FB.JSON.stringify(value) != FB.JSON.stringify(this[name])) {
          this[name] = value;
          this.fire(name, value);

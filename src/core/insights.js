@@ -15,18 +15,16 @@
  *
  *
  *
- * Contains the public method ``FB.Insights.impression`` for analytics pixel
+ * 包含公共方法 FB.Insights.impression ，用于分析像素
  *
  * @provides fb.insights
  * @requires fb.prelude
  */
 
 /**
- * Analytics pixel calls. If you are unsure about the potential that
- * integrating Facebook could provide your application, you can use this light
- * weight image beacon to collect some insights.
- *
- * TODO: Where does one go to look at this data?
+ * 分析像素。如果你不确信整合的Facebook能够为你的应用提供的潜力，你可以使用轻量级的可视化数据工具
+ * 收集一些信息。
+ * TODO: 在哪里看这个数据？
  *
  * @class FB.Insights
  * @static
@@ -49,8 +47,8 @@ FB.provide('Insights', {
    * @param cb {Function} optional - called with the result of the action
    */
   impression: function(params, cb) {
-    // no http or https so browser will use protocol of current page
-    // see http://www.faqs.org/rfcs/rfc1808.html
+    // 没有http 或者 https 那么浏览器就会使用当前页面所使用的协议
+    // 参考 http://www.faqs.org/rfcs/rfc1808.html
     var g = FB.guid(),
         u = "//ah8.facebook.com/impression.php/" + g + "/",
         i = new Image(1, 1),

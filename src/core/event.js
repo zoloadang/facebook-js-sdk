@@ -17,27 +17,25 @@
  * @requires fb.prelude fb.array
  */
 
-// NOTE: We tag this as FB.Event even though it is actually FB.EventProvider to
-// work around limitations in the documentation system.
+// 注意：虽然标志它为FB.Event,但实质内部是FB.EventProvider,用于解决文件系统上的限制；
+// 译者注：实现了一个订阅者模式
 /**
- * Event handling mechanism for globally named events.
+ * 全局命名事件的事件处理机制。
  *
  * @static
  * @class FB.Event
  */
 FB.provide('EventProvider', {
   /**
-   * Returns the internal subscriber array that can be directly manipulated by
-   * adding/removing things.
+   * 返回内部用户数组，可以直接做添加/删除的动作。
    *
    * @access private
    * @return {Object}
    */
   subscribers: function() {
-    // this odd looking logic is to allow instances to lazily have a map of
-    // their events. if subscribers were an object literal itself, we would
-    // have issues with instances sharing the subscribers when its being used
-    // in a mixin style.
+    //这个看起来很奇怪的逻辑实质是允许实例生成事件map的。当它在混合风格中使用的时候，如果订阅者
+    //是一个对象字面量本身，我们就会发现实例共享订阅者情况下的问题。
+    
     if (!this._subscribersMap) {
       this._subscribersMap = {};
     }
@@ -45,25 +43,24 @@ FB.provide('EventProvider', {
   },
 
   /**
-   * Subscribe to a given event name, invoking your callback function whenever
-   * the event is fired.
+   * 订阅一个给定的事件名，当事件被触发的时候就会调用你的回调函数。
    *
-   * For example, suppose you want to get notified whenever the session
-   * changes:
+   * 例如，假设你想当session改变的时候能够得到通知：
+   *  
    *
    *     FB.Event.subscribe('auth.sessionChange', function(response) {
    *       // do something with response.session
    *     });
    *
-   * Global Events:
+   * 全局事件:
    *
-   * - auth.login -- fired when the user logs in
-   * - auth.logout -- fired when the user logs out
-   * - auth.sessionChange -- fired when the session changes
-   * - auth.statusChange -- fired when the status changes
-   * - xfbml.render -- fired when a call to FB.XFBML.parse() completes
-   * - edge.create -- fired when the user likes something (fb:like)
-   * - comments.add -- fired when the user adds a comment (fb:comments)
+   * - auth.login -- 用户登陆的时候触发
+   * - auth.logout -- 用户退出的视乎触发
+   * - auth.sessionChange -- session改变的时候触发
+   * - auth.statusChange -- 状态改变的时候触发
+   * - xfbml.render -- FB.XFBML.parse() 调用完成触发
+   * - edge.create -- 当用户点击喜欢什么东西的时候触发(fb:like)
+   * - comments.add -- 当用户添加留言的时候触发(fb:comments)
    * - fb.log -- fired on log message
    *
    * @access public
@@ -81,12 +78,11 @@ FB.provide('EventProvider', {
   },
 
   /**
-   * Removes subscribers, inverse of [FB.Event.subscribe](FB.Event.subscribe).
+   * 删除订阅者，跟订阅相对的[FB.Event.subscribe](FB.Event.subscribe)。
    *
-   * Removing a subscriber is basically the same as adding one. You need to
-   * pass the same event name and function to unsubscribe that you passed into
-   * subscribe. If we use a similar example to
-   * [FB.Event.subscribe](FB.event.subscribe), we get:
+   * 删除订阅者跟添加订阅者基本一样。需要传递同样的事件名和函数去把之前添加的订阅者删掉。
+   * 用一个类似[FB.Event.subscribe](FB.event.subscribe)的例子，演示：
+   * 
    *
    *     var onSessionChange = function(response) {
    *       // do something with response.session
@@ -111,15 +107,13 @@ FB.provide('EventProvider', {
   },
 
   /**
-   * Repeatedly listen for an event over time. The callback is invoked
-   * immediately when monitor is called, and then every time the event
-   * fires. The subscription is canceled when the callback returns true.
+   * 随着时间的推移，事件被反复监听，当监听器被调用的时候，回调就立刻被调用，然后每次触发
+   * 事件，当回调返回true时，订阅被取消。
    *
    * @access private
    * @param {string} name Name of event.
-   * @param {function} callback A callback function. Any additional arguments
-   * to monitor() will be passed on to the callback. When the callback returns
-   * true, the monitoring will cease.
+   * @param {function} 
+   * 回调函数。任何传递给监听器的多余参数都会传递给回调函数。当回调返回true时，监听器就会停止。
    */
   monitor: function(name, callback) {
     if (!callback()) {
@@ -136,11 +130,10 @@ FB.provide('EventProvider', {
   },
 
   /**
-   * Removes all subscribers for named event.
+   * 删除所有命名事件的订阅者。
    *
-   * You need to pass the same event name that was passed to FB.Event.subscribe.
-   * This is useful if the event is no longer worth listening to and you
-   * believe that multiple subscribers have been set up.
+   * 你需要传递向FB.Event.subscribe传递的同样的函数名。
+   * 当你不想再监听这个事件并且确信多个监听者已经被创建的时候，这个函数就显得非常有用。
    *
    * @access private
    * @param name    {String}   name of the event
@@ -150,8 +143,7 @@ FB.provide('EventProvider', {
   },
 
   /**
-   * Fires a named event. The first argument is the name, the rest of the
-   * arguments are passed to the subscribers.
+   * 触发一个命名事件。第一个参数是事件名，其余的参数就会传递给订阅者。
    *
    * @access private
    * @param name {String} the event name
@@ -172,7 +164,7 @@ FB.provide('EventProvider', {
 });
 
 /**
- * Event handling mechanism for globally named events.
+ * 返回内部用户数组，可以直接做添加/删除的动作。
  *
  * @class FB.Event
  * @extends FB.EventProvider

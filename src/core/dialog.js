@@ -1,67 +1,37 @@
 /**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @provides fb.dialog
- * @requires fb.prelude
- *           fb.intl
- *           fb.array
- *           fb.content
- *           fb.dom
- *           fb.css.dialog
- */
-
-/**
- * Dialog creation and management.
- *
- * @class FB.Dialog
- * @static
- * @private
+ * FB dialog
+ * 为FB创建新的命名空间Dialog
+ * @by 兰七
  */
 FB.provide('Dialog', {
   /**
-   * The loader element.
-   *
+   * 加载元素
    * @access private
    * @type DOMElement
+   * @by 兰七
    */
   _loaderEl: null,
 
   /**
-   * The stack of active dialogs.
-   *
+   * 活动状态dialog组成的队列.
    * @access private
-   * @type Array
+   * @by 兰七
    */
   _stack: [],
 
   /**
-   * The currently visible dialog.
-   *
+   * 当前激活的dialog
    * @access private
-   * @type DOMElement
+   * @by 兰七
    */
   _active: null,
 
   /**
-   * Find the root dialog node for a given element. This will walk up the DOM
-   * tree and while a node exists it will check to see if has the fb_dialog
-   * class and if it does returns it.
-   *
+   * 通过其子节点找到dialog的根节点，如果存在会检测其是否有fb_dialog类名，有就返回
    * @access private
-   * @param node {DOMElement} a child node of the dialog
-   * @return {DOMElement} the root dialog element if found
+   * @param node {DOMElement} dialog的子节点
+   * @return {DOMElement} 返回找到的dialog的根节点
+   * @by 兰七
    */
   _findRoot: function(node) {
     while (node) {
@@ -73,12 +43,10 @@ FB.provide('Dialog', {
   },
 
   /**
-   * Show the "Loading..." dialog. This is a special dialog which does not
-   * follow the standard stacking semantics. If a callback is provided, a
-   * cancel action is provided using the "X" icon.
-   *
+   * 显示“loading”的dialog，这是一个特殊的框，如果回调函数存在，关闭按钮会显示，点击后会关闭dialog
    * @access private
-   * @param cb {Function} optional callback for the "X" action
+   * @param cb {Function} 可选的 ， 关闭动作的回调函数
+   * @by 兰七
    */
   _showLoader: function(cb) {
     if (!FB.Dialog._loaderEl) {
@@ -92,10 +60,7 @@ FB.provide('Dialog', {
       }));
     }
 
-    // this needs to be done for each invocation of _showLoader. since we don't
-    // stack loaders and instead simply hold on to the last one, it is possible
-    // that we are showing nothing when we can potentially be showing the
-    // loading dialog for a previously activated but not yet loaded dialog.
+    // 可以显示加载框，为一个已经激活尚未加载完成的dialog
     var loaderClose = FB.$('fb_dialog_loader_close');
     if (cb) {
       FB.Dom.removeCss(loaderClose, 'fb_hidden');
@@ -107,14 +72,14 @@ FB.provide('Dialog', {
       FB.Dom.addCss(loaderClose, 'fb_hidden');
       loaderClose.onclick = null;
     }
-
+	
     FB.Dialog._makeActive(FB.Dialog._loaderEl);
   },
 
   /**
-   * Hide the loading dialog if one is being shown.
-   *
+   * 如果加载dialog可见，将其隐藏
    * @access private
+   * @by 兰七
    */
   _hideLoader: function() {
     if (FB.Dialog._loaderEl && FB.Dialog._loaderEl == FB.Dialog._active) {
@@ -123,11 +88,10 @@ FB.provide('Dialog', {
   },
 
   /**
-   * Center a dialog based on its current dimensions and place it in the
-   * visible viewport area.
-   *
+   * 降低激活状态的dialog层级，设置新的dialog为激活对象，并使其居中
    * @access private
-   * @param el {DOMElement} the dialog node
+   * @param el {DOMElement} 需要激活的dialog
+   * @by 兰七
    */
   _makeActive: function(el) {
     FB.Dialog._lowerActive();
@@ -145,10 +109,10 @@ FB.provide('Dialog', {
   },
 
   /**
-   * Lower the current active dialog if there is one.
-   *
+   * 如果当前有激活dialog，降低其层级
    * @access private
-   * @param node {DOMElement} the dialog node
+   * @param node {DOMElement} dialog节点
+   * @by 兰七
    */
   _lowerActive: function() {
     if (!FB.Dialog._active) {
@@ -159,10 +123,10 @@ FB.provide('Dialog', {
   },
 
   /**
-   * Remove the dialog from the stack.
-   *
+   * 将dialog从活动队列中移除
    * @access private
-   * @param node {DOMElement} the dialog node
+   * @param node {DOMElement} dialog节点
+   * @by 兰七
    */
   _removeStacked: function(dialog) {
     FB.Dialog._stack = FB.Array.filter(FB.Dialog._stack, function(node) {
@@ -171,21 +135,19 @@ FB.provide('Dialog', {
   },
 
   /**
-   * Create a dialog. Returns the node of the dialog within which the caller
-   * can inject markup. Optional HTML string or a DOMElement can be passed in
-   * to be set as the content. Note, the dialog is hidden by default.
-   *
+   * 创建一个新的dialog，可以传DOM元素或者HTML文本作为其内容，默认隐藏
    * @access protected
    * @param opts {Object} Options:
-   * Property  | Type              | Description                       | Default
-   * --------- | ----------------- | --------------------------------- | -------
-   * content   | String|DOMElement | HTML String or DOMElement         |
-   * loader    | Boolean           | `true` to show the loader dialog  | `false`
-   * onClose   | Boolean           | callback if closed                |
-   * closeIcon | Boolean           | `true` to show close icon         | `false`
-   * visible   | Boolean           | `true` to make visible            | `false`
+   * Property  | Type              | Description                       	| Default
+   * --------- | ----------------- | --------------------------------- 	| -------
+   * content   | String|DOMElement | HTML文本或者DOM元素         					|
+   * loader    | Boolean           | `true` 显示加载dialog  				| `false`
+   * onClose   | Boolean           | 如果关闭有回调函数               					|
+   * closeIcon | Boolean           | `true` 显示关闭图标				| `false`
+   * visible   | Boolean           | `true` 使其可见						| `false`
    *
-   * @return {DOMElement} the dialog content root
+   * @return {DOMElement} dialog文本节点
+   * @by 兰七
    */
   create: function(opts) {
     opts = opts || {};
@@ -198,7 +160,7 @@ FB.provide('Dialog', {
       contentRoot = document.createElement('div'),
       className   = 'fb_dialog';
 
-    // optional close icon
+    // 可选的关闭图标
     if (opts.closeIcon && opts.onClose) {
       var closeIcon = document.createElement('a');
       closeIcon.className = 'fb_dialog_close_icon';
@@ -206,8 +168,7 @@ FB.provide('Dialog', {
       dialog.appendChild(closeIcon);
     }
 
-    // handle rounded corners j0nx
-//#JSCOVERAGE_IF
+    // IE下样式补充
     if (FB.Dom.getBrowserType() == 'ie') {
       className += ' fb_dialog_legacy';
       FB.Array.forEach(
@@ -249,13 +210,10 @@ FB.provide('Dialog', {
   },
 
   /**
-   * Raises the given dialog. Any active dialogs are automatically lowered. An
-   * active loading indicator is suppressed. An already-lowered dialog will be
-   * raised and it will be put at the top of the stack. A dialog never shown
-   * before will be added to the top of the stack.
-   *
+   * 增加所给的dialog，将dialog从队列删除，隐藏其加载提示，然后激活它，放在队列的最前面的
    * @access protected
-   * @param dialog {DOMElement} a child element of the dialog
+   * @param dialog {DOMElement} dialog的子节点
+   * @by 兰七
    */
   show: function(dialog) {
     dialog = FB.Dialog._findRoot(dialog);
@@ -268,10 +226,10 @@ FB.provide('Dialog', {
   },
 
   /**
-   * Remove the dialog, show any stacked dialogs.
-   *
+   * 删除给出dialog， 如果是激活dialog，显示活动队列中位置其次的dialog
    * @access protected
    * @param dialog {DOMElement} a child element of the dialog
+   * @by 兰七
    */
   remove: function(dialog) {
     dialog = FB.Dialog._findRoot(dialog);
@@ -286,12 +244,7 @@ FB.provide('Dialog', {
         }
       }
 
-      // wait before the actual removal because of race conditions with async
-      // flash crap. seriously, dont ever ask me about it.
-      // if we remove this without deferring, then in IE only, we'll get an
-      // uncatchable error with no line numbers, function names, or stack
-      // traces. the 3 second delay isn't a problem because the <div> is
-      // already hidden, it's just not removed from the DOM yet.
+      // 如果不延迟删除，在ie中，会得到一个无法捕获的错误，3秒的延迟并不是问题，因为DIV已经隐藏了，只是还未从ＤＯＭ中删除
       window.setTimeout(function() {
         dialog.parentNode.removeChild(dialog);
       }, 3000);

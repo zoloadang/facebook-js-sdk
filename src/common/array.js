@@ -1,38 +1,26 @@
-/**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @provides fb.array
- * @layer basic
- * @requires fb.prelude
- */
+﻿/**
+*
+* @provides fb.array
+* @layer basic
+* @requires fb.prelude
+* @by 陈静
+*/
 
 /**
- * Array related helper methods.
- *
- * @class FB.Array
- * @private
- * @static
- */
+* 数组相关的辅助方法。
+*
+* @class FB.Array
+* @private
+* @static
+*/
 FB.provide('Array', {
   /**
-   * Get index of item inside an array. Return's -1 if element is not found.
-   *
-   * @param arr {Array} Array to look through.
-   * @param item {Object} Item to locate.
-   * @return {Number} Index of item.
-   */
+* 返回某个数组项在数组内的索引值，如果没找到该项，则返回-1。
+*
+* @param arr {Array} 被查询的数组
+* @param item {Object} 要定位的数组项
+* @return {Number} 数组项的索引值
+*/
   indexOf: function (arr, item) {
     if (arr.indexOf) {
       return arr.indexOf(item);
@@ -49,13 +37,12 @@ FB.provide('Array', {
   },
 
   /**
-   * Merge items from source into target, but only if they dont exist. Returns
-   * the target array back.
-   *
-   * @param target {Array} Target array.
-   * @param source {Array} Source array.
-   * @return {Array} Merged array.
-   */
+* 归并两个数组，并剔除重复，返回归并后的新数组。
+*
+* @param target {Array} 目标数组
+* @param source {Array} 源数组
+* @return {Array} 归并后的数组
+*/
   merge: function(target, source) {
     for (var i=0; i < source.length; i++) {
       if (FB.Array.indexOf(target, source[i]) < 0) {
@@ -66,12 +53,12 @@ FB.provide('Array', {
   },
 
   /**
-   * Create an new array from the given array and a filter function.
-   *
-   * @param arr {Array} Source array.
-   * @param fn {Function} Filter callback function.
-   * @return {Array} Filtered array.
-   */
+* 过滤指定数组，并返回过滤后的数组
+*
+* @param arr {Array} 源数组
+* @param fn {Function} 过滤函数
+* @return {Array} 过滤后的数组
+*/
   filter: function(arr, fn) {
     var b = [];
     for (var i=0; i < arr.length; i++) {
@@ -83,14 +70,12 @@ FB.provide('Array', {
   },
 
   /**
-   * Create an array from the keys in an object.
-   *
-   * Example: keys({'x': 2, 'y': 3'}) returns ['x', 'y']
-   *
-   * @param obj {Object} Source object.
-   * @param proto {Boolean} Specify true to include inherited properties.
-   * @return {Array} The array of keys.
-   */
+* 用指定对象的键创建一个数组
+*
+* @param obj {Object} 源对象
+* @param proto {Boolean} 指定包含继承的属性为true
+* @return {Array} 键数组
+*/
   keys: function(obj, proto) {
     var arr = [];
     for (var key in obj) {
@@ -102,13 +87,12 @@ FB.provide('Array', {
   },
 
   /**
-   * Create an array by performing transformation on the items in a source
-   * array.
-   *
-   * @param arr {Array} Source array.
-   * @param transform {Function} Transformation function.
-   * @return {Array} The transformed array.
-   */
+* 转化源数组，返回转化后的新数组
+*
+* @param arr {Array} 源数组
+* @param transform {Function} 转化函数
+* @return {Array} 转化后的数组
+*/
   map: function(arr, transform) {
     var ret = [];
     for (var i=0; i < arr.length; i++) {
@@ -118,15 +102,13 @@ FB.provide('Array', {
   },
 
   /**
-   * For looping through Arrays and Objects.
-   *
-   * @param {Object} item   an Array or an Object
-   * @param {Function} fn   the callback function for iteration.
-   *    The function will be pass (value, [index/key], item) paramters
-   * @param {Bool} proto  indicate if properties from the prototype should
-   *                      be included
-   *
-   */
+* 用于遍历数组和对象
+*
+* @param {Object} item 一个数组或对象
+* @param {Function} fn 遍历后的回调函数，改函数会传递参数(value, [index/key], item)
+* @param {Bool} proto 是否包含原型属性
+*
+*/
    forEach: function(item, fn, proto) {
     if (!item) {
       return;

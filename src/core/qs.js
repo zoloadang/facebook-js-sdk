@@ -29,6 +29,7 @@
 FB.provide('QS', {
   /**
    * Encode parameters to a query string.
+   * 将参数编码成一个查询字符串
    *
    * @access private
    * @param   params {Object}  the parameters to encode
@@ -52,6 +53,7 @@ FB.provide('QS', {
 
   /**
    * Decode a query string into a parameters object.
+   * 将查询字符串解码长一个参数对象
    *
    * @access private
    * @param   str {String} the query string

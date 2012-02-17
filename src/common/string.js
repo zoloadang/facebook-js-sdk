@@ -1,60 +1,38 @@
-/**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @provides fb.string
- * @layer basic
- * @requires fb.prelude
- *
- */
+﻿/**
+*
+* @provides fb.string
+* @layer basic
+* @requires fb.prelude
+* @by 陈静
+*
+*/
 
 /**
- * Utility function related to Strings.
- *
- * @class FB.String
- * @static
- * @private
- */
+* 有关字符串的工具集。
+*
+* @class FB.String
+* @static
+* @private
+*/
 FB.provide('String', {
   /**
-   * Strip leading and trailing whitespace.
-   *
-   * @param s {String} the string to trim
-   * @returns {String} the trimmed string
-   */
+* 去除前置和末尾的空格
+*
+* @param s {String} 需要处理的字符串
+* @returns {String} 处理后的字符串
+*/
   trim: function(s) {
     return s.replace(/^\s*|\s*$/g, '');
   },
 
   /**
-   * Format a string.
-   *
-   * Example:
-   *     FB.String.format('{0}.facebook.com/{1}', 'www', 'login.php')
-   * Returns:
-   *     'www.facebook.com/login.php'
-   *
-   * Example:
-   *     FB.String.format('foo {0}, {1}, {0}', 'x', 'y')
-   * Returns:
-   *     'foo x, y, x'
-   *
-   * @static
-   * @param format {String} the format specifier
-   * @param arguments {...} placeholder arguments
-   * @returns {String} the formatted string
-   */
+* 格式化字符串
+*
+* @static
+* @param format {String} 格式规范	
+* @param arguments {...} 占位符参数
+* @returns {String} 格式化后的字符串
+*/
   format: function(format) {
     if (!FB.String.format._formatRE) {
       FB.String.format._formatRE = /(\{[^\}^\{]+\})/g;
@@ -77,16 +55,15 @@ FB.provide('String', {
   },
 
   /**
-   * Escape an string so that it can be embedded inside another string
-   * as quoted string.
-   *
-   * @param value {String} string to quote
-   * @return {String} an quoted string
-   */
+* 使得一个函数可以作为一个引用字符串嵌入到另一个字符串中。
+*
+* @param value {String} 需要引用的字符串
+* @return {String} 被引用的字符串
+*/
   quote: function(value) {
     var
       quotes = /["\\\x00-\x1f\x7f-\x9f]/g,
-      subst = {    // table of character substitutions
+      subst = { // table of character substitutions
         '\b': '\\b',
         '\t': '\\t',
         '\n': '\\n',

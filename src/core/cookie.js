@@ -1,89 +1,63 @@
 /**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *
- *
- * @provides fb.cookie
- * @requires fb.prelude
- *           fb.qs
- *           fb.event
- */
-
-/**
- * Cookie Support.
- *
- * @class FB.Cookie
- * @static
- * @access private
+ * FB Cookie
+ * 为FB创建新的命名空间Cookie
+ * @by 兰七
  */
 FB.provide('Cookie', {
   /**
-   * Holds the base_domain property to match the Cookie domain.
-   *
+   * 保留base_domain属性去映射Cookie的domain
    * @access private
    * @type String
+   * @by 兰七
    */
   _domain: null,
 
   /**
-   * Indicate if Cookie support should be enabled.
-   *
+   * 提示Cookie支持是否开启
    * @access private
    * @type Boolean
+   * @by 兰七
    */
   _enabled: false,
 
   /**
-   * Enable or disable Cookie support.
-   *
+   * 设置Cookie支持的开关
    * @access private
-   * @param val {Boolean} true to enable, false to disable
+   * @param val {Boolean} true是开启, false是关闭
+   * @by 兰七
    */
   setEnabled: function(val) {
     FB.Cookie._enabled = val;
   },
 
   /**
-   * Return the current status of the cookie system.
-   *
+   * 返回Cookie系统当前的状态
    * @access private
-   * @returns {Boolean} true if Cookie support is enabled
+   * @returns {Boolean} 如果Cookie支持开启返回true
+   * @by 兰七
    */
   getEnabled: function() {
     return FB.Cookie._enabled;
   },
 
   /**
-   * Try loading the session from the Cookie.
-   *
+   * 从Cookie中尝试加载session
    * @access private
-   * @return {Object} the session object from the cookie if one is found
+   * @return {Object} Cookie中的session对象
+   * @by 兰七
    */
   load: function() {
     var
-      // note, we have the opening quote for the value in the regex, but do
-      // not have a closing quote. this is because the \b already handles it.
+      // 注意，正则表达式中“没有闭合，因为\b会处理它
       cookie = document.cookie.match('\\bfbs_' + FB._apiKey + '="([^;]*)\\b'),
       session;
 
     if (cookie) {
-      // url encoded session stored as "sub-cookies"
+      // url转码了session
       session = FB.QS.decode(cookie[1]);
-      // decodes as a string, convert to a number
+      // 解码成字符串，再转成数字
       session.expires = parseInt(session.expires, 10);
-      // capture base_domain for use when we need to clear
+      // 需要可以获得base_domain
       FB.Cookie._domain = session.base_domain;
     }
 
@@ -91,12 +65,12 @@ FB.provide('Cookie', {
   },
 
   /**
-   * Helper function to set cookie value.
-   *
+   * 辅助函数去设置Cookie值
    * @access private
-   * @param val    {String} the string value (should already be encoded)
-   * @param ts     {Number} a unix timestamp denoting expiry
-   * @param domain {String} optional domain for cookie
+   * @param val    {String} 字符串，已经转码
+   * @param ts     {Number} 到期时间戳
+   * @param domain {String} Cookie的可选domain
+   * @by 兰七
    */
   setRaw: function(val, ts, domain) {
     document.cookie =
@@ -105,15 +79,15 @@ FB.provide('Cookie', {
       '; path=/' +
       (domain ? '; domain=.' + domain : '');
 
-    // capture domain for use when we need to clear
+    // 需要时可以获得domain
     FB.Cookie._domain = domain;
   },
 
   /**
-   * Set the cookie using the given session object.
-   *
+   * 用所给的session对象来设置Cookie
    * @access private
-   * @param session {Object} the session object
+   * @param session {Object} session对象
+   * @by 兰七
    */
   set: function(session) {
     session
@@ -125,9 +99,9 @@ FB.provide('Cookie', {
   },
 
   /**
-   * Clear the cookie.
-   *
+   * 清除Cookie
    * @access private
+   * @by 兰七
    */
   clear: function() {
     FB.Cookie.setRaw('', 0, FB.Cookie._domain);

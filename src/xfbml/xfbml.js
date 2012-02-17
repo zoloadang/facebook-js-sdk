@@ -30,12 +30,31 @@
  * @class FB.XFBML
  * @static
  */
+
+
+/**
+ * XFBML： Xtended FaceBook Markup Language
+ * 介绍在这里：http://developers.facebook.com/docs/reference/fbml/
+ * fackbook定义的一套标记语言，里面很有很标签，FB.XFBML就是用来解析这些标签的
+ */
+
+
+
+
+/**
+ * 渲染XFBML标签的方法.
+ * 把标签放在页面的任何地方，然后调用 FB.XFBML.parse();
+ */
 FB.provide('XFBML', {
   /**
    * The time allowed for all tags to finish rendering.
    *
    * @type Number
    */
+
+    /**
+     * 渲染标签的超时时间，默认30秒（没算错吧，这么长时间）
+     */
   _renderTimeout: 30000,
 
   /**
@@ -57,6 +76,13 @@ FB.provide('XFBML', {
    * @param dom {DOMElement} (optional) root DOM node, defaults to body
    * @param cb {Function} (optional) invoked when elements are rendered
    */
+
+
+    /**
+     * 渲染文档中所有的 XFBML 标签
+     * @param dom {DOMElement} （可选） 要渲染的根节点，默认为document.boy
+     * @param cb （可选） 渲染完成后的回调方法
+     */
   parse: function(dom, cb) {
     dom = dom || document.body;
 
@@ -66,21 +92,29 @@ FB.provide('XFBML', {
     // We start with count=1 rather than 0, and finally call onTagDone() after
     // we've kicked off all the tag processing. This ensures that we do not hit
     // count=0 before we're actually done queuing up all the tags.
+
+        /**
+         * 结合下面的代码，设置count就是为了在超时之后不再执行回调onTagDone
+         */
     var
       count = 1,
       onTagDone = function() {
         count--;
         if (count === 0) {
           // Invoke the user specified callback for this specific parse() run.
+          //执行用户传入callback方法，这里没有任何入参
           cb && cb();
 
           // Also fire a global event. A global event is fired for each
           // invocation to FB.XFBML.parse().
+          //调用FB.XFBML.parse()，都回触发一次全局注册的'xfbml.render'事件
           FB.Event.fire('xfbml.render');
         }
       };
 
     // First, find all tags that are present
+
+    //遍历标签对象FB.XFBML._tagInfos
     FB.Array.forEach(FB.XFBML._tagInfos, function(tagInfo) {
       // default the xmlns if needed
       if (!tagInfo.xmlns) {
@@ -99,6 +133,7 @@ FB.provide('XFBML', {
     });
 
     // Setup a timer to ensure all tags render within a given timeout
+    //设置一个定时器，确保所有标签在指定时间内渲染完
     window.setTimeout(function() {
       if (count > 0) {
         FB.log(
@@ -139,6 +174,8 @@ FB.provide('XFBML', {
 
   //////////////// Private methods ////////////////////////////////////////////
 
+    //////////////// FB.XFBML的似有方法XFBML ////////////////////////////////////////////
+
   /**
    * Process an XFBML element.
    *
@@ -147,8 +184,17 @@ FB.provide('XFBML', {
    * @param tagInfo {Object} the tag information
    * @param cb {Function} the function to bind to the "render" event for the tag
    */
+
+    /**
+     * 处理XFBML节点
+     * @param dom 要处理的dom节点
+     * @param tagInfo 及诶按信息
+     * @param cb 渲染节点之后的回调函数
+     */
   _processElement: function(dom, tagInfo, cb) {
     // Check if element for the dom already exists
+    //检查DOM节点是否存在
+    // 这里没太看明白，都是xml里面的方法，http://msdn.microsoft.com/zh-cn/library/ms186673(v=sql.90).aspx
     var element = dom._element;
     if (element) {
       element.subscribe('render', cb);
@@ -215,6 +261,15 @@ FB.provide('XFBML', {
    * @param localName {String} the unqualified tag name
    * @return {DOMElementCollection}
    */
+
+    /**
+     * 返回根节点下，带有指定名称和命名空间的所有元素的一个节点列表
+     * 这里主要为了兼容不同浏览器的差异
+     *      http://www.w3school.com.cn/xmldom/met_document_getelementsbytagnamens.asp
+     * @param dom 根节点
+     * @param xmlns XML命名空间
+     * @param localName 节点名称
+     */
   _getDomElements: function(dom, xmlns, localName) {
     // Different browsers behave slightly differently in handling tags
     // with custom namespace.
@@ -259,6 +314,14 @@ FB.provide('XFBML', {
    *
    * NOTE: Keep the list alpha sorted.
    */
+
+    /**
+     * 注册基础标签带上默认的设置。
+     * 每个标签都需要一个localName和className属性
+     * 命名空间可选，默认为‘FB’
+     *
+     * 注意：列表请按字母顺序排放
+     */
   _tagInfos: [
     { localName: 'activity',        className: 'FB.XFBML.Activity'        },
     { localName: 'add-profile-tab', className: 'FB.XFBML.AddProfileTab'   },

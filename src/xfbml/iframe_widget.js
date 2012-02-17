@@ -30,11 +30,19 @@
  * @extends FB.XFBML.Element
  * @private
  */
+
+
+/**
+ * XFBML Widgets基类
+ */
 FB.subclass('XFBML.IframeWidget', 'XFBML.Element', null, {
   /**
    * Indicate if the loading animation should be shown while the iframe is
    * loading.
    */
+    /**
+     * 是否显示加载动画
+     */
   _showLoader: true,
 
   /**

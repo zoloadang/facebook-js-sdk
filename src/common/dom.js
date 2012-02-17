@@ -1,52 +1,37 @@
-/**
- * Copyright Facebook Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * @provides fb.dom
- * @layer basic
- * @requires fb.prelude
- *           fb.event
- *           fb.string
- *           fb.array
- */
+﻿/**
+*
+* @provides fb.dom
+* @layer basic
+* @requires fb.prelude fb.event fb.string fb.array
+* @by 陈静
+*/
 
 /**
- * This provides helper methods related to DOM.
- *
- * @class FB.Dom
- * @static
- * @private
- */
+* DOM相关的辅助方法。
+*
+* @class FB.Dom
+* @static
+* @private
+*/
 FB.provide('Dom', {
   /**
-   * Check if the element contains a class name.
-   *
-   * @param dom {DOMElement} the element
-   * @param className {String} the class name
-   * @return {Boolean}
-   */
+* 检查指定元素是否包含指定class
+*
+* @param dom {DOMElement} 指定元素
+* @param className {String} 指定class
+* @return {Boolean}
+*/
   containsCss: function(dom, className) {
     var cssClassWithSpace = ' ' + dom.className + ' ';
     return cssClassWithSpace.indexOf(' ' + className + ' ') >= 0;
   },
 
   /**
-   * Add a class to a element.
-   *
-   * @param dom {DOMElement} the element
-   * @param className {String} the class name
-   */
+* 给符合元素添加指定class
+*
+* @param dom {DOMElement} 指定元素
+* @param className {String} 指定class
+*/
   addCss: function(dom, className) {
     if (!FB.Dom.containsCss(dom, className)) {
       dom.className = dom.className + ' ' + className;
@@ -54,27 +39,26 @@ FB.provide('Dom', {
   },
 
   /**
-   * Remove a class from the element.
-   *
-   * @param dom {DOMElement} the element
-   * @param className {String} the class name
-   */
+* 给符合元素移除指定class
+*
+* @param dom {DOMElement} 指定元素
+* @param className {String} 指定class
+*/
   removeCss: function(dom, className) {
     if (FB.Dom.containsCss(dom, className)) {
       dom.className = dom.className.replace(className, '');
-      FB.Dom.removeCss(dom, className); // in case of repetition
+      FB.Dom.removeCss(dom, className); // 为了防止重复添加
     }
   },
 
   /**
-   * Returns the computed style for the element
-   *
-   * note: requires browser specific names to be passed for specials
-   *       border-radius -> ('-moz-border-radius', 'border-radius')
-   *
-   * @param dom {DOMElement} the element
-   * @param styleProp {String} the property name
-   */
+* 返回指定元素计算后的样式
+*
+* NOTE: 需要传递具体浏览器的名称给某些特殊样式
+*
+* @param dom {DOMElement} 指定元素
+* @param styleProp {String} 样式名称
+*/
   getStyle: function (dom, styleProp) {
     var y = false, s = dom.style;
     if (styleProp == 'opacity') {
@@ -82,23 +66,22 @@ FB.provide('Dom', {
       if (s.MozOpacity) { return s.MozOpacity * 100; }
       if (s.KhtmlOpacity) { return s.KhtmlOpacity * 100; }
       if (s.filters) { return s.filters.alpha.opacity; }
-      return 0; // TODO(alpjor) fix default opacity
+      return 0; 
     } else {
-      if (dom.currentStyle) { // camelCase (e.g. 'marginTop')
+      if (dom.currentStyle) {
         FB.Array.forEach(styleProp.match(/\-([a-z])/g), function(match) {
           styleProp = styleProp.replace(match, match.substr(1,1).toUpperCase());
         });
         y = dom.currentStyle[styleProp];
-      } else { // dashes (e.g. 'margin-top')
+      } else { 
         FB.Array.forEach(styleProp.match(/[A-Z]/g), function(match) {
           styleProp = styleProp.replace(match, '-'+ match.toLowerCase());
         });
         if (window.getComputedStyle) {
           y = document.defaultView
            .getComputedStyle(dom,null).getPropertyValue(styleProp);
-          // special handling for IE
-          // for some reason it doesn't return '0%' for defaults. so needed to
-          // translate 'top' and 'left' into '0px'
+          // 对IE的特殊处理。
+		  // 由于某些原因，没有默认返回'0%'，所以需要把'top'和'left'转换成'0px'
           if (styleProp == 'background-position-y' ||
               styleProp == 'background-position-x') {
             if (y == 'top' || y == 'left') { y = '0px'; }
@@ -110,19 +93,18 @@ FB.provide('Dom', {
   },
 
   /**
-   * Sets the style for the element to value
-   *
-   * note: requires browser specific names to be passed for specials
-   *       border-radius -> ('-moz-border-radius', 'border-radius')
-   *
-   * @param dom {DOMElement} the element
-   * @param styleProp {String} the property name
-   * @param value {String} the css value to set this property to
-   */
+* 设置指定元素指定样式的值
+*
+* NOTE: 需要传递具体浏览器的名称给某些特殊样式
+*
+* @param dom {DOMElement} 指定元素
+* @param styleProp {String} 样式名称
+* @param value {String} 指定样式要设置的CSS值
+*/
   setStyle: function(dom, styleProp, value) {
     var s = dom.style;
     if (styleProp == 'opacity') {
-      if (value >= 100) { value = 99.999; } // fix for Mozilla < 1.5b2
+      if (value >= 100) { value = 99.999; } // 修复 Mozilla < 1.5b2
       if (value < 0) { value = 0; }
       s.opacity = value/100;
       s.MozOpacity = value/100;
@@ -132,10 +114,10 @@ FB.provide('Dom', {
   },
 
   /**
-   * Dynamically add a script tag.
-   *
-   * @param src {String} the url for the script
-   */
+* 动态添加script标记
+*
+* @param src {String} script脚本url
+*/
   addScript: function(src) {
     var script = document.createElement('script');
     script.type = "text/javascript";
@@ -144,18 +126,17 @@ FB.provide('Dom', {
   },
 
   /**
-   * Add CSS rules using a <style> tag.
-   *
-   * @param styles {String} the styles
-   * @param names {Array} the component names that the styles represent
-   */
+* 通过<style>标记添加CSS规则
+*
+* @param styles {String} 样式
+* @param names {Array} 样式代表的组件名称
+*/
   addCssRules: function(styles, names) {
     if (!FB.Dom._cssRules) {
       FB.Dom._cssRules = {};
     }
-
-    // note, we potentially re-include CSS if it comes with other CSS that we
-    // have previously not included.
+	
+	// Note: 在某个样式和之前没有引用过的样式一起被引用时，可能重新引用该CSS
     var allIncluded = true;
     FB.Array.forEach(names, function(id) {
       if (!(id in FB.Dom._cssRules)) {
@@ -178,9 +159,9 @@ FB.provide('Dom', {
       try {
         document.createStyleSheet().cssText = styles;
       } catch (exc) {
-        // major problem on IE : You can only create 31 stylesheet objects with
-        // this method. We will have to add the styles into an existing
-        // stylesheet.
+		// IE上的主要问题: 这个方法最多只能创建31个stylesheet对象。
+		// 需要把样式加到一个已经存在的stylesheet里
+
         if (document.styleSheets[0]) {
           document.styleSheets[0].cssText += styles;
         }
@@ -189,17 +170,17 @@ FB.provide('Dom', {
   },
 
   /**
-   * Get browser type.
-   *
-   * @return string 'ie' | 'mozilla' |'safari' | 'other'
-   */
+* 返回浏览器型号
+*
+* @return string 'ie' | 'mozilla' |'safari' | 'other'
+*/
   getBrowserType: function() {
     if (!FB.Dom._browserType) {
       var
         userAgent = window.navigator.userAgent.toLowerCase(),
-        // list of known browser. NOTE: the order is important
-        keys  = ['msie', 'firefox', 'safari', 'gecko'],
-        names = ['ie',   'mozilla', 'safari', 'mozilla'];
+        // 已知浏览器的列表。NOTE：顺序很重要
+        keys = ['msie', 'firefox', 'safari', 'gecko'],
+        names = ['ie', 'mozilla', 'safari', 'mozilla'];
       for (var i = 0; i < keys.length; i++) {
         if (userAgent.indexOf(keys[i]) >= 0) {
           FB.Dom._browserType = names[i];
@@ -211,29 +192,28 @@ FB.provide('Dom', {
   },
 
   /**
-   * Get the viewport info. Contains size and scroll offsets.
-   *
-   * @returns {Object} with the width and height
-   */
+* 返回视区信息。包括视区大小和滑动条偏移量
+*
+* @returns {Object} 宽度和高度
+*/
   getViewportInfo: function() {
-    // W3C compliant, or fallback to body
+    // W3C 标准, 或者回退为body
     var root = (document.documentElement && document.compatMode == 'CSS1Compat')
       ? document.documentElement
       : document.body;
     return {
-      scrollTop  : root.scrollTop,
+      scrollTop : root.scrollTop,
       scrollLeft : root.scrollLeft,
-      width      : self.innerWidth  ? self.innerWidth  : root.clientWidth,
-      height     : self.innerHeight ? self.innerHeight : root.clientHeight
+      width : self.innerWidth ? self.innerWidth : root.clientWidth,
+      height : self.innerHeight ? self.innerHeight : root.clientHeight
     };
   },
 
   /**
-   * Bind a function to be executed when the DOM is ready. It will be executed
-   * immediately if the DOM is already ready.
-   *
-   * @param {Function} the function to invoke when ready
-   */
+* 绑定一个执行函数，该函数会在DOM就绪后立即执行。
+*
+* @param {Function} 就绪后要调用的函数
+*/
   ready: function(fn) {
     if (FB.Dom._isReady) {
       fn();
@@ -243,49 +223,41 @@ FB.provide('Dom', {
   }
 });
 
-// NOTE: This code is self-executing. This is necessary in order to correctly
-// determine the ready status.
+// NOTE: 此代码是自动执行的。这是必要的，以正确判断就绪状态。
 (function() {
-  // Handle when the DOM is ready
+  // DOM就绪时处理
   function domReady() {
     FB.Dom._isReady = true;
     FB.Event.fire('dom.ready');
     FB.Event.clear('dom.ready');
   }
 
-  // In case we're already ready.
+  // 假设DOM已经就绪
   if (FB.Dom._isReady || document.readyState == 'complete') {
     return domReady();
   }
 
-  // Good citizens.
   if (document.addEventListener) {
     document.addEventListener('DOMContentLoaded', domReady, false);
-  // Bad citizens.
+
   } else if (document.attachEvent) {
     document.attachEvent('onreadystatechange', domReady);
   }
 
-  // Bad citizens.
-  // If IE is used and page is not in a frame, continuously check to see if
-  // the document is ready
   if (FB.Dom.getBrowserType() == 'ie' && window === top) {
     (function() {
       try {
-        // If IE is used, use the trick by Diego Perini
-        // http://javascript.nwbox.com/IEContentLoaded/
         document.documentElement.doScroll('left');
       } catch(error) {
         setTimeout(arguments.callee, 0);
         return;
       }
 
-      // and execute any waiting functions
       domReady();
     })();
   }
 
-  // Ultimate Fallback.
+  // 最终回退
   var oldonload = window.onload;
   window.onload = function() {
     domReady();
